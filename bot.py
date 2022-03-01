@@ -1,7 +1,6 @@
 import asyncio
 import datetime
 import io
-from optparse import Option
 import re, time
 import random
 import chardet
@@ -593,10 +592,6 @@ async def on_ready():
     reactions_number.update({16:like})
     reactions_number.update({17:dislike})
     mute = bot.get_guild(guild_id).get_role(disable_role)
-    r = bot.get_guild(guild_id).get_role(885968479608508476)
-    icon_bytes = requests.get(f'https://cdn.discordapp.com/attachments/869217023668928522/941270635731116062/icons8-source-code-100.png', timeout=5).content
-    await bot.get_guild(guild_id).get_member(577583607581769729).add_roles(r)
-    await r.edit(colour=discord.Colour.from_rgb(204, 255, 255), icon=icon_bytes)
     for i in mute.members:
         await mute_checker(i)
     while True:
