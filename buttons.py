@@ -67,7 +67,10 @@ class MainMenuButton(discord.ui.Button):
     async def callback(self, interaction: discord.Interaction):
         res = interaction.response
         res.is_done()
-        await on_click_button(self.ctx, self.msg, self.x, self.bot)
+        if self.x == 5:
+            await on_vote_button(self.ctx, self.msg, self.x, self.bot)
+        else:
+            await on_click_button(self.ctx, self.msg, self.x, self.bot)
 
 class RemoveMessageButton(discord.ui.Button):
     def __init__(self, msg, t, bot):
