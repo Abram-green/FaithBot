@@ -176,7 +176,7 @@ class VoteChoiceTypeButton(discord.ui.Button):
 class ValentinButton(discord.ui.Button):
     def __init__(self, msg, ctx, x, bot, row: int=1) -> None:
         super().__init__(
-            label="Валентинка",
+            label="Открыточка",
             style=discord.enums.ButtonStyle.blurple,
             custom_id = "valentin",
             row = row
@@ -193,7 +193,7 @@ class ValentinButton(discord.ui.Button):
             ValentinButtonAccept(style=discord.enums.ButtonStyle.green, label="Отправить", custom_id="accept", row=1, msg=self.msg, ctx=self.ctx, bot=self.bot, x=1),
             ValentinButtonAccept(style=discord.enums.ButtonStyle.red, label="Отменить", custom_id="cancel", row=1, msg=self.msg, ctx=self.ctx, bot=self.bot, x=1)
         ]
-        desc = "Для отправки валентинки вам в начале своего сообщение нужно написать ник получателя!\nПросьба не оскорблять друг друга"
+        desc = "Для отправки открытки вам в начале своего сообщение нужно написать ник получателя!\nПросьба не оскорблять друг друга"
         rows = [ValentinButtonAccept(style=discord.enums.ButtonStyle.green, label="Анонимно", custom_id=f"accept_anon", row=2, msg=self.msg, ctx=self.ctx, bot=self.bot, x=1)]
         for i in message_roles.keys():
             role = self.bot.get_guild(guild_id).get_role(i)
