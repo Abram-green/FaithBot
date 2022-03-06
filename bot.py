@@ -30,6 +30,8 @@ from config import *
 from mc import *
 from sqldb import *
 import stats
+
+import start
 import buttons
 from buttons import *
 
@@ -797,6 +799,23 @@ async def get_stats(inter, member: Option(discord.Member, 'Выбери игро
         if vk != '':
             embed.add_field(name="VK:", value=f"https://vk.com/id{vk}", inline=True)
         await inter.respond(embed=embed, ephemeral=False)
+
+
+@bot.slash_command(name="admin", description="Управление ботом", guild_ids=[guild_id], default_permission=False)
+@Perm.has_any_role("Разработчик", "Администратор")
+async def _admin(inter):
+    embed = Embed(title="Административная панель", description="Остоновка работы скрипта, рестарт и мб потом что-то ещё...")
+
+    components = [
+        AdminButton("Стоп", "stop", discord.enums.ButtonStyle.red, inter, bot),
+        AdminButton("Рестарт", "restart", discord.enums.ButtonStyle.green, inter, bot)
+    ]
+
+    view = discord.ui.View(timeout=None)
+    for i in components:
+        view.add_item(i)
+
+    await inter.respond(embed=embed, view=view)
 
 
 @bot.slash_command(name="mute", description="Замьютить участника", guild_ids=[guild_id], default_permission=False)

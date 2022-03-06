@@ -9,6 +9,7 @@ from discord.ext import commands
 from bot import *
 from sqldb import *
 from config import *
+from start import *
 
 
 async def on_vote_button(ctx, msg, x, bot):
@@ -232,3 +233,24 @@ class ValentinButtonAccept(discord.ui.Button):
                 view.add_item(RemoveMessageButton(msg=self.msg, t=t, bot=self.bot))
                 await self.msg.edit(content="Отправленно", embed=None, view=view)
     
+class AdminButton(discord.ui.Button):
+    def __init__(self, label, custom_id, style, ctx, bot) -> None:
+        super().__init__(
+            label = label,
+            style = style,
+            custom_id = custom_id
+        )
+        self.ctx = ctx
+        self.bot = bot
+    async def callback(self, interaction: discord.Interaction):
+        res = interaction.response
+        if self.ctx.author.top_role.name == "Администратор" or self.ctx.author.top_role.name == "Разработчик":
+            res.is_done()
+            if self.custom_id == "stop":
+                stop()
+                await self.ctx.send("Бот выклечен!")
+            if self.custom_id == "restart":
+                await self.ctx.send("Бот перезапускается...")
+                restart()
+        else:
+            await res.send_modal(discord.ui.Modal(title="У тебя нету доступа!"))
