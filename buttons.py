@@ -232,7 +232,21 @@ class ValentinButtonAccept(discord.ui.Button):
                 view = discord.ui.View(timeout=None)
                 view.add_item(RemoveMessageButton(msg=self.msg, t=t, bot=self.bot))
                 await self.msg.edit(content="Отправленно", embed=None, view=view)
-    
+
+class AdminPanelError(discord.ui.Modal):
+    def __init__(self, label) -> None:
+        super().__init__(
+            title = label
+        )
+        self.add_item(discord.ui.InputText(
+            label="Мне ли не всё равно?",
+            value="Yfgbib xnj-nj? z dc` hfdyj yt ghjxne!",
+            required=False
+        ))
+    async def callback(self, interaction: discord.Interaction):
+        res = interaction.response
+        res.is_done()
+
 class AdminButton(discord.ui.Button):
     def __init__(self, label, custom_id, style, ctx, bot) -> None:
         super().__init__(
@@ -244,7 +258,7 @@ class AdminButton(discord.ui.Button):
         self.bot = bot
     async def callback(self, interaction: discord.Interaction):
         res = interaction.response
-        if self.ctx.author.top_role.name == "Администратор" or self.ctx.author.top_role.name == "Разработчик":
+        if interaction.user.top_role.id == 863151707344601098 or interaction.user.top_role.id == 885968479608508476:
             res.is_done()
             if self.custom_id == "stop":
                 stop()
@@ -253,4 +267,4 @@ class AdminButton(discord.ui.Button):
                 await self.ctx.send("Бот перезапускается...")
                 restart()
         else:
-            await res.send_modal(discord.ui.Modal(title="У тебя нету доступа!"))
+            await res.send_modal(AdminPanelError(label="У тебя нету доступа!"))
