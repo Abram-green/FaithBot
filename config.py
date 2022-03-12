@@ -46,7 +46,7 @@ sql_data = {
     "password": "userpassword",
     "database": "dbname"
 }
-permissions = {
+permissionsDict = {
 roleid: "permissinonname",
 
 }
