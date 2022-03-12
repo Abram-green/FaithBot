@@ -330,7 +330,8 @@ async def send_channel(ctx, channel_id, role = "", bot = bot):
                     s = pyshorteners.Shortener(timeout = 9000)
                     data = {
                         "url": ctx.attachments[0].url,
-                        "title": ctx.content,
+                        "title": text[0],
+                        "description": desc,
                         "author": nick
                     }
                     res = requests.post("http://65.21.138.59:25576/api/video/0", data=data)
@@ -390,7 +391,8 @@ async def send_channel_valentin(ctx, channel_id, role = "", bot = bot):
                     s = pyshorteners.Shortener(timeout = 9000)
                     data = {
                         "url": ctx.attachments[0].url,
-                        "title": ctx.content,
+                        "title": text[0],
+                        "description": desc,
                         "author": nick
                     }
                     res = requests.post("http://65.21.138.59:25576/api/video/0", data=data)
