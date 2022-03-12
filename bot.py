@@ -651,7 +651,7 @@ async def on_message(ctx):
                     MainMenuButton(label="Объявления", custom_id="advert", x=4, msg=msg, ctx=ctx, bot=bot, row=2),
                     MainMenuButton(label="Голосования", custom_id="vote", x=5, msg=msg, ctx=ctx, bot=bot, row=1),
                     MainMenuButton(label="Анонсы", custom_id="anons", x=6, msg=msg, ctx=ctx, bot=bot, row=2),
-                    ValentinButton(msg=msg, ctx=ctx, x=1, bot=bot, row=2)
+                    #ValentinButton(msg=msg, ctx=ctx, x=1, bot=bot, row=2)
                 ]
 
                 view = discord.ui.View(timeout=None)
@@ -768,7 +768,6 @@ async def _activity(inter, activity: Option(str, 'Выбери активнос�
             game = i
 
     await inter.respond(content=game, ephemeral=False, view=view, delete_after=30)
-    restart()
 
 @bot.slash_command(name="stat", description="Показать статистику", guild_ids=[guild_id])
 async def get_stats(inter, member: Option(discord.Member, 'Выбери игрока') = None):
@@ -783,7 +782,7 @@ async def get_stats(inter, member: Option(discord.Member, 'Выбери игро
         vk = user[7]
         role = None 
         for r in member.roles:
-            for i in permissions.keys():
+            for i in permissionsDict.keys():
                 if i == r.id:
                     role = r
         for i in hours[-7:]:
@@ -806,7 +805,6 @@ async def get_stats(inter, member: Option(discord.Member, 'Выбери игро
         if vk != '':
             embed.add_field(name="VK:", value=f"https://vk.com/id{vk}", inline=True)
         await inter.respond(embed=embed, ephemeral=False)
-    restart()
 
 
 @bot.slash_command(name="panel", description="Управление ботом", guild_ids=[guild_id], default_permission=False)
@@ -890,7 +888,6 @@ async def _mute(inter, member: Option(discord.Member, 'Выбери игрока
         embed.set_thumbnail(url=f"https://faithcraft.ru/engine/face.php?nick={member.display_name}")
         embed.set_author(name="FaithBot", url='https://faithcraft.ru/', icon_url=bot.user.avatar.url)
         await inter.respond(embed=embed, ephemeral=True)
-    restart()
 
 
 @bot.slash_command(name="unmute", description="Снять ограничения", guild_ids=[guild_id], default_permission=False)
@@ -912,16 +909,15 @@ async def _mute(inter, member: Option(discord.Member, 'Выбери игрока
         await send_audit_unmute(member)
     else:
         await inter.respond(content=f"У {member.mention} нет ограничения!", ephemeral=True)
-    restart()
 
 @bot.event
 async def on_member_update(before, after):
     if before.roles != after.roles:
         for i in before.roles:
-            if permissions.get(i.id) is not None:
+            if permissionsDict.get(i.id) is not None:
                 remove_permission(i.id, after.display_name)
         for i in after.roles:
-            if permissions.get(i.id) is not None:
+            if permissionsDict.get(i.id) is not None:
                 add_permission(i.id, after.display_name)
                 
 if __name__ == "__main__":
