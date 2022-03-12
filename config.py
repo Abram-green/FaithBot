@@ -38,6 +38,7 @@ mute_immune_roles = [roleid]
 message_roles = {
     roleid: "rolename",
 }
+colorHex = "fff111"
 #sql checker bot
 sql_data = {
     "host": "hostip",
