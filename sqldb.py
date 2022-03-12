@@ -72,13 +72,13 @@ def add_permission(id, nick):
             # Fetch rows from last executed query
             result = cursor.fetchall()
             uuid = result[0][1]
-            cursor.execute(f"SELECT * FROM luckperms_user_permissions WHERE `uuid` = '{uuid}' AND `permission`= 'group.{permissions[id]}'")
+            cursor.execute(f"SELECT * FROM luckperms_user_permissions WHERE `uuid` = '{uuid}' AND `permission`= 'group.{permissionsDict[id]}'")
             result = cursor.fetchall()
             if len(result) >= 1:
                 user = result[0]
                 print(user)
             else:
-                cursor.execute(f"INSERT INTO luckperms_user_permissions (uuid, permission, value, server, world, expiry, contexts) VALUES ('{uuid}', 'group.{permissions[id]}', 1, '{server}', '{world}', 0, '" + "{}" + "')")
+                cursor.execute(f"INSERT INTO luckperms_user_permissions (uuid, permission, value, server, world, expiry, contexts) VALUES ('{uuid}', 'group.{permissionsDict[id]}', 1, '{server}', '{world}', 0, '" + "{}" + "')")
             connection.commit()
 
 def remove_permission(id, nick):
@@ -94,9 +94,9 @@ def remove_permission(id, nick):
             # Fetch rows from last executed query
             result = cursor.fetchall()
             uuid = result[0][1]
-            cursor.execute(f"SELECT * FROM luckperms_user_permissions WHERE `uuid` = '{uuid}' AND `permission`= 'group.{permissions[id]}'")
+            cursor.execute(f"SELECT * FROM luckperms_user_permissions WHERE `uuid` = '{uuid}' AND `permission`= 'group.{permissionsDict[id]}'")
             result = cursor.fetchall()
-            cursor.execute(f"DELETE FROM luckperms_user_permissions WHERE `uuid` = '{uuid}' AND `permission`= 'group.{permissions[id]}'")
+            cursor.execute(f"DELETE FROM luckperms_user_permissions WHERE `uuid` = '{uuid}' AND `permission`= 'group.{permissionsDict[id]}'")
             connection.commit()
 
 def check_user(id):
