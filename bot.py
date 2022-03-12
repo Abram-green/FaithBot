@@ -128,6 +128,9 @@ chl_id = {
     6: anons_channel_id
 }
 
+def hex_to_rgb(hex: str):
+    return tuple(int(hex[i:i+2], 16) for i in (0, 2, 4))
+
 def text_filter(text):
     for i in wordlist:
         if i in text:
@@ -202,11 +205,11 @@ async def mute_checker(member):
             await send_audit_unmute(member)
 
 async def send_audit_post(ctx, channel_id, nick, title, desc, att_url, msg, bot=bot):
-    embed = Embed(title="Отправленно сообщение!", description=f"Заголовок: {title}\nОписание: {desc}\n\n\nОтправлен: {ctx.author.mention} (От имени: {nick})\nВ канал: <#{channel_id}>\n{datetime.datetime.now()}\n[Сообщение]({msg.jump_url})", color=discord.Color.from_rgb(238, 0, 255)).set_image(url=att_url).set_footer(text="FaithBot", icon_url=bot.user.avatar.url)
+    embed = Embed(title="Отправленно сообщение!", description=f"Заголовок: {title}\nОписание: {desc}\n\n\nОтправлен: {ctx.author.mention} (От имени: {nick})\nВ канал: <#{channel_id}>\n{datetime.datetime.now()}\n[Сообщение]({msg.jump_url})", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=att_url).set_footer(text="FaithBot", icon_url=bot.user.avatar.url)
     await bot.get_channel(audit_channel_id).send(embed=embed)
 
 async def send_audit_mute(member, moder, end_data, reason, channel):
-    embed = Embed(title=f"", description=f"Пользователю {member.display_name} ({member.mention}) были выданы ограничения!", color=discord.Color.from_rgb(238, 0, 255), timestamp=datetime.datetime.now())
+    embed = Embed(title=f"", description=f"Пользователю {member.display_name} ({member.mention}) были выданы ограничения!", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]), timestamp=datetime.datetime.now())
     embed.add_field(name="Дата окончания:", value=end_data, inline=True)
     embed.add_field(name="Причина:", value=reason, inline=True)
     embed.add_field(name=moder.top_role.name, value=moder.mention, inline=True)
@@ -215,7 +218,7 @@ async def send_audit_mute(member, moder, end_data, reason, channel):
     await bot.get_channel(audit_channel_id).send(embed=embed)
 
 async def send_audit_unmute(member, moder = None):
-    embed = Embed(title=f"", description=f"С пользователя {member.display_name} ({member.mention}) были сняты ограничения!", color=discord.Color.from_rgb(238, 0, 255), timestamp=datetime.datetime.now())
+    embed = Embed(title=f"", description=f"С пользователя {member.display_name} ({member.mention}) были сняты ограничения!", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]), timestamp=datetime.datetime.now())
     if moder is not None:
         embed.add_field(name=moder.top_role.name, value=moder.mention)
     embed.set_footer(icon_url=member.avatar.url, text=member.id)
@@ -276,7 +279,7 @@ async def send_channel(ctx, channel_id, role = "", bot = bot):
                             preveiw = f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg" 
                     if text[0].replace(url, "") != "":
                         title = text[0].replace(url, "")
-                    msg = await channel.send(content=content, embed=Embed(title=title, description=desc.replace(url, ""), color=discord.Color.from_rgb(238, 0, 255)).set_image(url=preveiw).set_footer(text=nick, icon_url=icon), view=buttons.LinkButton(label="YouTube", url=url))
+                    msg = await channel.send(content=content, embed=Embed(title=title, description=desc.replace(url, ""), color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=preveiw).set_footer(text=nick, icon_url=icon), view=buttons.LinkButton(label="YouTube", url=url))
                     await send_audit_post(ctx, channel_id, nick, title, desc.replace(url, ""), preveiw, msg, bot=bot)
                     return msg
                 if "tiktok.com" in url:
@@ -292,7 +295,7 @@ async def send_channel(ctx, channel_id, role = "", bot = bot):
                     print(data)
                     response = requests.get("https://www.tiktok.com/oembed?url=" + f"https://www.tiktok.com/{data[0]}/video/{data[1]}")
                     preveiw = response.json()["thumbnail_url"]
-                    msg = await channel.send(content=content, embed=Embed(title=text[0].replace(url, ""), description=desc.replace(url, ""), color=discord.Color.from_rgb(238, 0, 255)).set_image(url=preveiw).set_footer(text=nick, icon_url=icon), view=buttons.LinkButton(label="TikTok", url=url))
+                    msg = await channel.send(content=content, embed=Embed(title=text[0].replace(url, ""), description=desc.replace(url, ""), color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=preveiw).set_footer(text=nick, icon_url=icon), view=buttons.LinkButton(label="TikTok", url=url))
                     await send_audit_post(ctx, channel_id, nick, text[0].replace(url, ""), desc.replace(url, ""), preveiw, msg, bot=bot)
                     return msg
                 if "youtu.be" in url:
@@ -305,7 +308,7 @@ async def send_channel(ctx, channel_id, role = "", bot = bot):
                     preveiw = f"https://i.ytimg.com/vi/{vid}/hqdefault.jpg" 
                     if text[0].replace(url, "") != "":
                         title = text[0].replace(url, "")
-                    msg = await channel.send(content=content, embed=Embed(title=title, description=desc.replace(url, ""), color=discord.Color.from_rgb(238, 0, 255)).set_image(url=preveiw).set_footer(text=nick, icon_url=icon), view=buttons.LinkButton(label="YouTube", url=url))
+                    msg = await channel.send(content=content, embed=Embed(title=title, description=desc.replace(url, ""), color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=preveiw).set_footer(text=nick, icon_url=icon), view=buttons.LinkButton(label="YouTube", url=url))
                     await send_audit_post(ctx, channel_id, nick, title, desc.replace(url, ""), preveiw, msg, bot=bot)
                     return msg
                 if "twitch.tv" in url:
@@ -315,7 +318,7 @@ async def send_channel(ctx, channel_id, role = "", bot = bot):
                     for i in str(quotes).split(" "):
                         if "content=" in i:
                             preveiw = i.replace('content="', '').replace('"', '')
-                    msg = await channel.send(content=content, embed=Embed(title=text[0].replace(url, ""), description=desc.replace(url, ""), color=discord.Color.from_rgb(238, 0, 255)).set_image(url=preveiw).set_footer(text=nick, icon_url=icon), view=buttons.LinkButton(label="Twitch", url=url))
+                    msg = await channel.send(content=content, embed=Embed(title=text[0].replace(url, ""), description=desc.replace(url, ""), color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=preveiw).set_footer(text=nick, icon_url=icon), view=buttons.LinkButton(label="Twitch", url=url))
                     await send_audit_post(ctx, channel_id, nick, text[0].replace(url, ""), desc.replace(url, ""), preveiw, msg, bot=bot)
                     return msg
             if channel_id == anons_channel_id:
@@ -338,16 +341,16 @@ async def send_channel(ctx, channel_id, role = "", bot = bot):
                     await send_audit_post(ctx, channel_id, nick, content + "\n" + url, "", None, msg, bot=bot)
                     return msg
                     pass
-                msg = await channel.send(content=content, embed=Embed(title=text[0], description=desc, color=discord.Color.from_rgb(238, 0, 255)).set_image(url=ctx.attachments[0].url).set_footer(text=nick, icon_url=icon))
+                msg = await channel.send(content=content, embed=Embed(title=text[0], description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=ctx.attachments[0].url).set_footer(text=nick, icon_url=icon))
                 await send_audit_post(ctx, channel_id, nick, text[0], desc, ctx.attachments[0].url, msg, bot=bot)
             else:
-                msg = await channel.send(content=content, embed=Embed(title=text[0], description=desc, color=discord.Color.from_rgb(238, 0, 255)).set_footer(text=nick, icon_url=icon))
+                msg = await channel.send(content=content, embed=Embed(title=text[0], description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_footer(text=nick, icon_url=icon))
                 await send_audit_post(ctx, channel_id, nick, text[0], desc, "", msg, bot=bot)
             return msg
         else:
             return False
     else:
-        msg = await channel.send(embed=Embed(title="", description="", color=discord.Color.from_rgb(238, 0, 255)).set_image(url=ctx.attachments[0].url).set_footer(text=nick, icon_url=icon))
+        msg = await channel.send(embed=Embed(title="", description="", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=ctx.attachments[0].url).set_footer(text=nick, icon_url=icon))
         await send_audit_post(ctx, channel_id, nick, "", "", ctx.attachments[0].url, msg, bot=bot)
         return msg
 
@@ -398,12 +401,12 @@ async def send_channel_valentin(ctx, channel_id, role = "", bot = bot):
                     return msg
                     pass
                 
-                embed = Embed(title=text[0], description=desc, color=discord.Color.from_rgb(238, 0, 255)).set_image(url=ctx.attachments[0].url)
+                embed = Embed(title=text[0], description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=ctx.attachments[0].url)
                 embed.set_thumbnail(url=icon)
                 embed.set_footer(text=nick, icon_url=bot.user.avatar.url)
                 msg = await target.send(embed=embed)
             else:
-                embed = Embed(title=text[0], description=desc, color=discord.Color.from_rgb(238, 0, 255))
+                embed = Embed(title=text[0], description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
                 embed.set_thumbnail(url=icon)
                 embed.set_footer(text=nick, icon_url=bot.user.avatar.url)
                 msg = await target.send(embed=embed)
@@ -445,7 +448,7 @@ async def send_channel_vote(ctx, channel_id, role = "", type: int = 0, bot=bot):
             if len(ctx.attachments) >= 1:
                 like = await bot.get_guild(guild_id).fetch_emoji(939065707977662544)
                 dislike = await bot.get_guild(guild_id).fetch_emoji(939065383070093343)
-                msg = await channel.send(content=content, embed=Embed(title=text[0], description=desc, color=discord.Color.from_rgb(238, 0, 255)).set_image(url=ctx.attachments[0].url).set_footer(text=nick, icon_url=icon))
+                msg = await channel.send(content=content, embed=Embed(title=text[0], description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=ctx.attachments[0].url).set_footer(text=nick, icon_url=icon))
                 if type != 0:
                     for i in range(type):
                         await msg.add_reaction(reactions_number[i + 1])
@@ -456,7 +459,7 @@ async def send_channel_vote(ctx, channel_id, role = "", type: int = 0, bot=bot):
             else:
                 like = await bot.get_guild(guild_id).fetch_emoji(939065707977662544)
                 dislike = await bot.get_guild(guild_id).fetch_emoji(939065383070093343)
-                msg = await channel.send(content=content, embed=Embed(title=text[0], description=desc, color=discord.Color.from_rgb(238, 0, 255)).set_footer(text=nick, icon_url=icon))
+                msg = await channel.send(content=content, embed=Embed(title=text[0], description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_footer(text=nick, icon_url=icon))
                 if type != 0:
                     for i in range(type):
                         await msg.add_reaction(reactions_number[i + 1])
@@ -643,7 +646,7 @@ async def on_message(ctx):
             if bot.get_guild(guild_id).get_role(role_id) in bot.get_guild(guild_id).get_member(ctx.author.id).roles and bot.get_guild(guild_id).get_role(disable_role) not in bot.get_guild(guild_id).get_member(ctx.author.id).roles:
                 if get_mute(ctx.author):
                     return
-                msg = await ctx.channel.send(embed=Embed(title="Отправить сообщение в чат:", color=discord.Color.from_rgb(238, 0, 255)).set_image(url=main_photo_url))
+                msg = await ctx.channel.send(embed=Embed(title="Отправить сообщение в чат:", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=main_photo_url))
                 components = [
                     MainMenuButton(label="Торговля", custom_id="trade", x=1, msg=msg, ctx=ctx, bot=bot, row=1),
                     MainMenuButton(label="Контент", custom_id="content", x=2, msg=msg, ctx=ctx, bot=bot, row=2),
@@ -658,7 +661,7 @@ async def on_message(ctx):
                 for i in components:
                     view.add_item(i)
 
-                await msg.edit(embed=Embed(title="Отправить сообщение в чат:", color=discord.Color.from_rgb(238, 0, 255)).set_image(url=main_photo_url), view=view)
+                await msg.edit(embed=Embed(title="Отправить сообщение в чат:", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=main_photo_url), view=view)
     else:
         if ctx.author.bot == False:
             member = ctx.author
@@ -678,7 +681,7 @@ async def on_message(ctx):
             court = get_courts()
             if court:
                 channel = bot.get_channel(courts_channel_id)
-                embed = Embed(title=f"{court[1]} --> {court[2]}", description=f"**Ситуация**: {court[3]}\n\n**Желаймый результат:** {court[6]}", color=discord.Color.from_rgb(238, 0, 255))
+                embed = Embed(title=f"{court[1]} --> {court[2]}", description=f"**Ситуация**: {court[3]}\n\n**Желаймый результат:** {court[6]}", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
                 view = None
                 if court[4]:
                     embed.set_image(url=f"https://faithcraft.ru/court/styles/img/{court[4]}/1.png")
@@ -760,7 +763,7 @@ async def _activity(inter, activity: Option(str, 'Выбери активнос�
 
     view = ActivityJoinButton(f"https://discord.com/invite/{link['code']}")
     
-    embed = Embed(title=f"Создана партия", description=f"Игра: {activity_type[activity]}", color=discord.Color.from_rgb(238, 0, 255))
+    embed = Embed(title=f"Создана партия", description=f"Игра: {activity_type[activity]}", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
 
     game = ""
     for i, j in activity_type.items():
@@ -788,7 +791,7 @@ async def get_stats(inter, member: Option(discord.Member, 'Выбери игро
         for i in hours[-7:]:
             week_hour += i
         desc = f"**Никнейм на сервере:** {user[2]}\n**Всего сыгранно часов:** {total}\n**За неделю сыгранно:** {week_hour}\n**Штрафов:** {user[4]}"
-        embed = Embed(title="Статистика!", description=desc, color=discord.Color.from_rgb(238, 0, 255))
+        embed = Embed(title="Статистика!", description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
         stat_img = stats.get_stat(user[2])
         embed.set_image(url=stat_img)
         embed.set_thumbnail(url=f"https://faithcraft.ru/engine/face.php?nick={user[2]}")
@@ -858,14 +861,14 @@ async def _mute(inter, member: Option(discord.Member, 'Выбери игрока
         new_mute(member, duration_con, end_time, reason, inter.author)
         if type == "Чат":
             await member.add_roles(bot.get_guild(guild_id).get_role(disable_role), reason=reason)
-        embed = Embed(title=f"Пользователю {member.display_name} выданы ограничения!", description=f"", color=discord.Color.from_rgb(238, 0, 255))
+        embed = Embed(title=f"Пользователю {member.display_name} выданы ограничения!", description=f"", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
         embed.add_field(name="Выдана на:", value=duration_con, inline=True)
         embed.add_field(name="Выдана в:", value=type + 'e', inline=True)
         embed.add_field(name="Дата окончания:", value=end_data, inline=True)
         embed.add_field(name="Причина:", value=reason, inline=True)
         embed.add_field(name=inter.author.top_role.name, value=inter.author.mention)
         embed.set_thumbnail(url=f"https://faithcraft.ru/engine/face.php?nick={member.display_name}")
-        embed_m = Embed(title=f"Тебе выданы ограничения!", description=f"", color=discord.Color.from_rgb(238, 0, 255))
+        embed_m = Embed(title=f"Тебе выданы ограничения!", description=f"", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
         embed_m.add_field(name="Выдана на:", value=duration_con, inline=True)
         embed_m.add_field(name="Дата окончания:", value=end_data, inline=True)
         embed_m.add_field(name="Причина:", value=reason, inline=True)
@@ -879,7 +882,7 @@ async def _mute(inter, member: Option(discord.Member, 'Выбери игрока
         end_data = time.strftime("%d.%b - %H:%M:%S", time.gmtime(mute[2]))
         reason = mute[3]
         moder = bot.get_guild(guild_id).get_member(mute[4])
-        embed = Embed(title=f"У {member.display_name} уже есть ограничения!", description=f"", color=discord.Color.from_rgb(238, 0, 255))
+        embed = Embed(title=f"У {member.display_name} уже есть ограничения!", description=f"", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
         embed.add_field(name=moder.top_role.name, value=moder.mention)
         embed.add_field(name="Выдана на:", value=mute[1], inline=True)
         embed.add_field(name="Выдана в:", value=type + 'e', inline=True)
@@ -897,10 +900,10 @@ async def _mute(inter, member: Option(discord.Member, 'Выбери игрока
     if mute:
         remove_mute(member)
         await member.remove_roles(bot.get_guild(guild_id).get_role(disable_role))
-        embed = Embed(title=f"С пользователя {member.display_name} сняты ограничения!", description=f"", color=discord.Color.from_rgb(238, 0, 255))
+        embed = Embed(title=f"С пользователя {member.display_name} сняты ограничения!", description=f"", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
         embed.set_thumbnail(url=f"https://faithcraft.ru/engine/face.php?nick={member.display_name}")
         embed.add_field(name=inter.author.top_role.name, value=inter.author.mention)
-        embed_m = Embed(title=f"С тебя сняты ограничения!", description=f"", color=discord.Color.from_rgb(238, 0, 255))
+        embed_m = Embed(title=f"С тебя сняты ограничения!", description=f"", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
         embed_m.set_thumbnail(url=f"https://faithcraft.ru/engine/face.php?nick={member.display_name}")
         embed_m.add_field(name=inter.author.top_role.name, value=inter.author.mention)
         embed_m.set_footer(text=inter.author.display_name, icon_url=inter.author.avatar.url)
