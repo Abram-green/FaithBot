@@ -29,7 +29,7 @@ async def on_vote_button(ctx, msg, x, bot):
         view.add_item(i)
     view.add_item(components[1])
 
-    await msg.edit(embed=Embed(title="Убедитесь, что сообщение соответствует требованиям для отправки. Если это не так, вам будет выдано наказание.", description="Данная функция существует для отправки голосования с одним вариантом ответ!\nУказывать за что какой голос обезательно!\nПеред отправкой выберете режим отправки!", color=discord.Color.from_rgb(238, 0, 255)).set_image(url=main_photo_url), view=view)
+    await msg.edit(embed=Embed(title="Убедитесь, что сообщение соответствует требованиям для отправки. Если это не так, вам будет выдано наказание.", description="Данная функция существует для отправки голосования с одним вариантом ответ!\nУказывать за что какой голос обезательно!\nПеред отправкой выберете режим отправки!", color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=main_photo_url), view=view)
     
 
 async def on_click_button(ctx, msg, x, bot):
@@ -50,7 +50,7 @@ async def on_click_button(ctx, msg, x, bot):
     for i in components + rows:
         view.add_item(i)
     
-    await msg.edit(embed=Embed(title="Убедитесь, что сообщение соответствует требованиям для отправки. Если это не так, вам будет выдано наказание.", description=desc, color=discord.Color.from_rgb(238, 0, 255)).set_image(url=chl_photo[x]), view=view)
+    await msg.edit(embed=Embed(title="Убедитесь, что сообщение соответствует требованиям для отправки. Если это не так, вам будет выдано наказание.", description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=chl_photo[x]), view=view)
 
 class MainMenuButton(discord.ui.Button):
     def __init__(self, label: str, custom_id: str, x: int, msg, ctx, bot, row: int=1):
@@ -172,7 +172,7 @@ class VoteChoiceTypeButton(discord.ui.Button):
                     for i in components + rows:
                         view.add_item(i)
                     
-                    await self.msg.edit(embed=Embed(title="Убедитесь, что сообщение соответствует требованиям для отправки. Если это не так, вам будет выдано наказание.", description=desc, color=discord.Color.from_rgb(238, 0, 255)).set_image(url=chl_photo[self.x]), view=view)
+                    await self.msg.edit(embed=Embed(title="Убедитесь, что сообщение соответствует требованиям для отправки. Если это не так, вам будет выдано наказание.", description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=chl_photo[self.x]), view=view)
 
 class ValentinButton(discord.ui.Button):
     def __init__(self, msg, ctx, x, bot, row: int=1) -> None:
@@ -206,7 +206,7 @@ class ValentinButton(discord.ui.Button):
         for i in components + rows:
             view.add_item(i)
         
-        await self.msg.edit(embed=Embed(title="Убедитесь, что сообщение соответствует требованиям для отправки. Если это не так, вам будет выдано наказание.", description=desc, color=discord.Color.from_rgb(238, 0, 255)).set_image(url=chl_photo[self.x]), view=view)
+        await self.msg.edit(embed=Embed(title="Убедитесь, что сообщение соответствует требованиям для отправки. Если это не так, вам будет выдано наказание.", description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2])).set_image(url=chl_photo[self.x]), view=view)
 
 
 class ValentinButtonAccept(discord.ui.Button):
@@ -268,3 +268,41 @@ class AdminButton(discord.ui.Button):
                 restart()
         else:
             await res.send_modal(AdminPanelError(label="У тебя нету доступа!"))
+
+
+class ReportModal(discord.ui.Modal):
+    def __init__(self, message, ctx, bot) -> None:
+        super().__init__(
+            title = "Отправка жалобы"
+        )
+        self.add_item(discord.ui.InputText(
+            label='Причина',
+            placeholder="Он меня оскорбил...",
+            custom_id = 'reason'
+        ))
+        self.add_item(discord.ui.InputText(
+            label='Желаемое наказание',
+            placeholder="Мут в чате на ...",
+            custom_id = 'compensation'
+        ))
+        self.message = message
+        self.ctx = ctx
+        self.bot = bot
+    async def callback(self, inter):
+        message = self.message
+        channel = self.bot.get_channel(moder_channel_id)
+        desc = f'```{message.content}'
+        for attach in message.attachments:
+            desc += f"\n[Вложение] {attach.url}"
+        desc += '```'
+        embed = Embed(title="Отправлен репорт", description=desc, color=discord.Color.from_rgb(hex_to_rgb(colorHex)[0], hex_to_rgb(colorHex)[1], hex_to_rgb(colorHex)[2]))
+        if len(message.attachments) != 0:
+            embed.set_image(url=message.attachments[0].url)
+        embed.add_field(name='Автор сообщения', value=message.author.mention)
+        embed.add_field(name='Автор репорта', value=inter.user.mention)
+        embed.add_field(name='Причина', value=self.children[0].value, inline=False)
+        embed.add_field(name='Желаемый результат', value=self.children[1].value, inline=True)
+        embed.add_field(name='Сообщение', value=f'[ссылка]({message.jump_url})', inline=False)
+        embed.add_field(name='Канал', value=message.channel.mention, inline=True)
+        await channel.send(embed=embed)
+        await inter.response.send_message(content="Жалоба отправленна!", ephemeral=True)

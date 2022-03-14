@@ -915,6 +915,12 @@ async def _mute(inter, member: Option(discord.Member, 'Выбери игрока
     else:
         await inter.respond(content=f"У {member.mention} нет ограничения!", ephemeral=True)
 
+
+@bot.message_command(name="Report", guilds_id=[guild_id])
+async def report_on_message(inter, message):
+    await inter.send_modal(ReportModal(message=message, ctx=inter, bot=bot))
+
+
 @bot.event
 async def on_member_update(before, after):
     if before.roles != after.roles:
