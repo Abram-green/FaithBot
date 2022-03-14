@@ -16,6 +16,7 @@ photo_channel_id = channelid
 content_channel_id = channelid
 anons_channel_id = channelid
 audit_channel_id = channelid
+moder_channel_id = channelid
 sinking_channel_id = channelid
 courts_channel_id = channelid
 choice_role_message_id = messageid
